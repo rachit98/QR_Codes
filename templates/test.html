@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+      flex-direction: column;
+    }
+
+    #borderedDiv {
+      border: 2px solid black;
+      padding: 20px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    #outputImage {
+      display: none; /* Initially hide the image */
+    }
+  </style>
+  <title>Centered Div with Image</title>
+</head>
+<body>
+
+<div id="borderedDiv">
+  <!-- Content of the div with form -->
+  <form onsubmit="showImage(); return false;">
+    <!-- Your form fields go here -->
+    <input type="submit" value="Show Image">
+  </form>
+</div>
+
+<div id="outputImage">
+  <!-- The image will be added dynamically after form submission -->
+  <img src="your-image-url.jpg" alt="Your Image">
+</div>
+
+<script>
+  function showImage() {
+    // Get the outputImage div
+    var outputImage = document.getElementById('outputImage');
+
+    // Show the image by changing the display property
+    outputImage.style.display = 'block';
+  }
+</script>
+
+</body>
+</html>

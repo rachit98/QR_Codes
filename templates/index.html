@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-COMPATIBLE" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, inital-scale=1.0" />
+        <style>
+            body {
+                position: relative;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 20vh;
+                margin: 0;
+                background-color: black;
+                color: white; /* Set text color to white for better visibility on a black background */
+                font-family: Arial, sans-serif;
+            }
+
+            .center {
+                border: 2px solid white;
+                padding: 20px;
+                }
+
+            .generated{
+                padding: 10px;
+                position: absolute;
+                top: 100%;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+        </style>
+        <title>QR Codes</title>
+    </head>
+
+    <body>
+
+        <div class="center">
+            <div class="title">
+                <h1>QR Code Generator</h1>
+                <h3> Link: </h3>
+            </div>
+            <form action="/" method="POST">
+                <input type="text" name="link">
+                <button type="submit">Generate</button>
+            </form>
+
+        </div>
+        {% if data %}
+        <div class="generated">
+                <img id="qrcode" src="{{data}}" alt="failed to load QR code">
+                <p> QR Code generated</p>
+                <button id="saveButton" onclick="downloadImage()">Save QR Code</button>
+        </div>
+        {% endif %}
+
+    <script>
+    function downloadImage() {
+        var image = document.getElementById('qrcode');
+        var canvas = document.createElement('canvas');
+        canvas.width = image.width;
+        canvas.height = image.height;
+        var context = canvas.getContext('2d');
+        context.drawImage(image, 0, 0);
+        var dataURL = canvas.toDataURL('image/png');
+        var downloadLink = document.createElement('a');
+        downloadLink.href = dataURL;
+        downloadLink.download = 'downloaded-image.png';
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+        }
+    </script>
+
+    </body>
+</html>
