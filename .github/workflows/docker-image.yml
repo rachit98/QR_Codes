@@ -23,6 +23,6 @@ jobs:
       run: |
         docker buildx create --use
         docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-        docker buildx build --platform linux/amd64,linux/arm64 -t your-docker-username/your-image-name:latest -f Dockerfile .
+        docker buildx build --platform linux/amd64,linux/arm64 -t rachit98/python-qr-code:latest -f Dockerfile .
         docker push rachit98/python-qr-code:latest
 
