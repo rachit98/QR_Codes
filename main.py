@@ -11,10 +11,6 @@ app = Flask(__name__)
 def home():
     return render_template('index.html')
 
-@app.route('/test')
-def home_test():
-    return "hello World"
-
 @app.route('/', methods=['POST'])
 def generateQR():
     memory = BytesIO()
