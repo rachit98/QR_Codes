@@ -1,17 +1,22 @@
-name: CI Pipeline
+name: CD Pipeline
 
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["CI Pipeline"]
+    types:
+      - completed
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
+    - name: Pull Docker Image
+      run: sudo docker pull rachit98/python-qr-code:latest
+    - name: Delete Old Docker Container
+      run: sudo docker rm -f python-qr-code || true
+    - name: Run Docker Container
+      run: sudo docker run -d -p 5000:5000 --name python-qr-code rachit98/python-qr-code
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
