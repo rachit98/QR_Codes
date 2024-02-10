@@ -6,26 +6,32 @@ on:
     types:
       - completed
 
+
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Pull Docker Image
-      run: sudo docker pull rachit98/python-qr-code:latest
-    - name: Delete Old Docker Container
-      run: sudo docker rm -f python-qr-code || true
-    - name: Run Docker Container
-      run: sudo docker run -d -p 5000:5000 --name python-qr-code rachit98/python-qr-code
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-    - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v1
-
-    - name: Build and Push Docker Image
-      env:
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+    - name: Install dependencies
       run: |
-        docker buildx create --use
-        docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD
-        docker buildx build --platform linux/amd64,linux/arm64 -t rachit98/python-qr-code:latest -f Dockerfile --push .
+        sudo apt update
+        sudo apt install -y docker.io
+        sudo apt install -y sshpass
+
+    - name: Log in to Docker Hub
+      run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Pull Docker image
+      run: docker pull rachit98/python-qr-code:latest
+
+    - name: Stop and remove existing container
+      run: |
+        sshpass -p ${{ secrets.EC2_PASSWORD }} ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_INSTANCE_IP }} "docker stop qr_code_container || true"
+        sshpass -p ${{ secrets.EC2_PASSWORD }} ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_INSTANCE_IP }} "docker rm qr_code_container || true"
+
+    - name: Run Docker container on EC2 instance
+      run: |
+        sshpass -p ${{ secrets.EC2_PASSWORD }} ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_INSTANCE_IP }} "docker run -d --name qr_code_container -p 5000:5000 rachit98/python-qr-code:latest"
