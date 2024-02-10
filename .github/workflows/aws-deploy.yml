@@ -15,22 +15,12 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Install dependencies
-      run: |
-        sudo apt update
-        sudo apt install -y docker.io
-        sudo apt install -y sshpass
-
     - name: Log in to Docker Hub
       run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Pull Docker image
       run: docker pull rachit98/python-qr-code:latest
 
-    - name: Stop and remove existing container
-      run: |
-        sshpass -p ${{ secrets.EC2_PASSWORD }} ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_INSTANCE_IP }} "docker stop qr_code_container || true"
-        sshpass -p ${{ secrets.EC2_PASSWORD }} ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_INSTANCE_IP }} "docker rm qr_code_container || true"
 
     - name: Run Docker container on EC2 instance
       run: |
