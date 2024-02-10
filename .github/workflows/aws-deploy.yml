@@ -34,4 +34,4 @@ jobs:
 
     - name: Run Docker container on EC2 instance
       run: |
-        sshpass -p ${{ secrets.EC2_PASSWORD }} ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_INSTANCE_IP }} "docker run -d --name qr_code_container -p 5000:5000 rachit98/python-qr-code:latest"
+        ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_PASSWORD }} ubuntu@${{ secrets.EC2_INSTANCE_IP }} "docker pull rachit98/python-qr-code:latest && docker run -d -p 5000:5000 rachit98/python-qr-code:latest"
